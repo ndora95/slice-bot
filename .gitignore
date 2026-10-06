@@ -1,0 +1,34 @@
+# Secrets: only the template is committed
+.env
+.env.*
+!.env.example
+
+# Python
+backend/.venv/
+.venv/
+__pycache__/
+*.py[cod]
+backend/.pytest_cache/
+.pytest_cache/
+
+# Generated at setup / runtime
+backend/data/
+backend/eval_results/latest-live.json
+backend/slicebot/data/*.duckdb*
+.cache/
+
+# Front end
+frontend/node_modules/
+frontend/dist/
+*.tsbuildinfo
+*.local.*
+
+# Backups
+*.tgz
+*.zip
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.log

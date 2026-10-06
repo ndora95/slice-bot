@@ -1,0 +1,198 @@
+/* smooth-ui design tokens, SliceBot edition: "Kitchen & City".
+ * The console is the kitchen: warm cast-iron neutrals, matte surfaces, hairlines, and one oven-orange accent.
+ * The city outside is cool: the map keeps its night blues, so the warm UI and the cold streets read as two places.
+ * Status colors come off the pizza: tomato for faults, melted cheese for waiting, basil for done.
+ *
+ * Structure / spacing / motion are FIXED. Never hardcode a value this file defines.
+ */
+:root {
+  /* Surfaces: cast iron. Opaque steps, no glass; elevation is a lighter step plus a hairline. */
+  --surface-bg:#0e0c0a; --surface-panel:#171411; --surface-raised:#211d19;
+  --surface-hover:#2a2520; --surface-inset:#110f0d;
+  --surface-scrim:rgba(8,6,4,0.66);
+  --surface-solid:#1b1714; /* menus, sticky bars, popovers */
+
+  /* Hairlines: warm white at low alpha */
+  --hairline-shell:rgba(255,236,214,0.07); --hairline:rgba(255,236,214,0.085); --hairline-strong:rgba(255,236,214,0.14);
+  --hairline-hover:rgba(255,236,214,0.24); --line-soft:rgba(255,236,214,0.05);
+
+  /* Text: flour and crust */
+  --text-primary:#f7f1e9; --text-emphasis:#ddd3c6;
+  --text-secondary:#a59a8d; --text-faint:#62584e;
+
+  /* Accent: oven orange. --accent-bright clears 4.5:1 on the panel for text and icons. */
+  --accent:#ff6b2c;
+  --accent-bright:#ff8f5e;
+  --accent-ink:#1a0d05; /* text on an accent fill */
+  --accent-fill:rgba(255,107,44,0.13);
+  --accent-line:rgba(255,107,44,0.40);
+  --accent-grad:linear-gradient(180deg,#ff8247 0%,#ff6b2c 100%);
+
+  /* RESERVED: AI affordances only (model-run steps, "Claude" markers). */
+  --accent-ai:#b4a2ff;
+  --accent-ai-fill:rgba(180,162,255,0.13);
+  --accent-ai-line:rgba(180,162,255,0.38);
+
+  /* Status, off the pizza: tomato, melted cheese, basil, and the sky over the city for info */
+  --status-crit:#e5484d; --status-crit-text:#ff8a80; --status-crit-fill:rgba(229,72,77,0.15);
+  --status-warn:#f0b43c; --status-warn-text:#f8cf6a; --status-warn-fill:rgba(240,180,60,0.15);
+  --status-ok:#4fb071;   --status-ok-text:#7dd69a;   --status-ok-fill:rgba(79,176,113,0.16);
+  --status-info:#5aaee6; --status-info-text:#8fcbf2; --status-info-fill:rgba(90,174,230,0.14);
+
+  /* Chart series (fixed order; status colors are NOT series colors) */
+  --series-1:#7aa7ff; --series-2:#ff9a62; --series-3:#f0c75e;
+  --series-4:#b4a2ff; --series-5:#6fcf97; --series-6:#f28fb0;
+
+  /* Typography: Inter for the product, Bricolage Grotesque for headlines and the hero numerals. */
+  --font-ui:'Inter Variable','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --font-display:'Bricolage Grotesque Variable','Inter Variable',system-ui,sans-serif;
+  --font-mono:var(--font-ui);
+  --font-code:'JetBrains Mono Variable',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+
+  /* Product-UI scale. DEFAULT BODY IS --text-ui-smd (14px). */
+  --text-ui-2xs:11px; --text-ui-xs:12px; --text-ui-sm:13px;
+  --text-ui-smd:14px; --text-ui-md:15px; --text-ui-lg:18px;
+  /* Hero numerals (stat tiles) */
+  --text-metric:32px; --text-metric-lg:40px;
+  /* Headline scale, display face only */
+  --text-headline-md:clamp(22px, calc(22px + 6*(100vw - 390px)/890), 28px);
+  --text-headline-lg:clamp(26px, calc(26px + 10*(100vw - 390px)/890), 36px);
+  --text-headline-xl:clamp(32px, calc(32px + 24*(100vw - 390px)/890), 56px);
+  --tracking-body:-0.003em; --lh-body:1.5;
+
+  /* Layout */
+  --content-narrow:1120px; --content-wide:1320px;
+  --shell-header:60px; --shell-tabs:48px;
+
+  /* Spacing (4px rhythm) */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
+  --space-6:24px; --space-7:32px; --space-8:40px;
+
+  /* Radii: shell > panel > card > chip > control > pill */
+  --radius-shell:32px; --radius-panel:18px; --radius-card:14px;
+  --radius-chip:10px;  --radius-ctl:9px;    --radius-pill:999px;
+
+  /* Elevation: cards get a lit top edge only; real shadows are for things that float. */
+  --shadow-card:inset 0 1px 0 rgba(255,236,214,0.045);
+  --shadow-overlay:0 1px 2px rgba(0,0,0,0.4), 0 24px 56px -18px rgba(0,0,0,0.8);
+  --shadow-glow-accent:inset 0 1px 0 rgba(255,255,255,0.22);
+  --shadow-glow-ok:inset 0 1px 0 rgba(255,255,255,0.18);
+
+  /* Motion: one decel family, three UI durations, a reveal tier, and one cinematic tier for the three big moments
+   * (sign-in to console, a case changing hands, a decision landing). */
+  --ease-out:cubic-bezier(0,0,.2,1);
+  --ease-enter:cubic-bezier(.22,1,.36,1);
+  --ease-in-out:cubic-bezier(.4,0,.2,1);
+  --dur-fast:150ms; --dur-med:200ms; --dur-slow:300ms; --dur-reveal:450ms; --dur-cinematic:700ms;
+
+  /* Film grain over every surface (opacity only; the texture lives in index.css). */
+  --grain-opacity:0.05;
+}
+
+/* Light: the customer's side of the counter. Cream, crust, and tomato. Same structure, inverted ramps.
+ * Applies to the whole document or to any subtree marked data-theme="light". */
+:root[data-theme="light"], [data-theme="light"] {
+  --surface-bg:#f7f2ea; --surface-panel:#fffdf9; --surface-raised:#f3ece2;
+  --surface-hover:#ebe2d5; --surface-inset:#f9f5ef; --surface-solid:#fffdf9;
+  --surface-scrim:rgba(40,28,16,0.32);
+  --hairline-shell:#e9dfd1; --hairline:#ece3d6; --hairline-strong:#ddd1c0;
+  --hairline-hover:rgba(60,40,20,0.26); --line-soft:rgba(60,40,20,0.06);
+  --text-primary:#24190f; --text-emphasis:#43362a;
+  --text-secondary:#76695b; --text-faint:#b4a797;
+  --shadow-card:0 1px 0 rgba(60,40,20,0.03);
+  --shadow-overlay:0 1px 2px rgba(60,40,20,0.08), 0 18px 40px -16px rgba(60,40,20,0.24);
+  /* On cream, the base orange is a fill; text uses the deeper roast. */
+  --accent-bright:#c4470f;
+  --accent-fill:rgba(255,107,44,0.11);
+  --accent-line:rgba(214,84,26,0.36);
+  --accent-ai:#6b55d6; --accent-ai-fill:rgba(107,85,214,0.10); --accent-ai-line:rgba(107,85,214,0.32);
+  --status-crit-text:#b42a2f; --status-warn-text:#8a5d00;
+  --status-ok-text:#24733f;   --status-info-text:#1c6a99;
+  --grain-opacity:0.035;
+
+  /* The customer's mini map: a daytime street plan */
+  --minimap-bg:#f1eadf; --minimap-road:#e2d7c7; --minimap-road-major:#d3c5b1; --minimap-water:#cfe2ea; --minimap-park:#dde8d2;
+  --minimap-route:#ff6b2c; --minimap-route-done:#d8b9a2; --minimap-home:#24190f; --minimap-hub:#ff6b2c;
+}
+
+:where(button,[role='button'],a,input,select,textarea,summary):focus-visible {
+  outline: 2px solid var(--accent-bright); outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important; scroll-behavior: auto !important;
+  }
+}
+
+/* Entrance-motion grammar: one decel curve, short travel. */
+@keyframes rise-in  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+@keyframes media-in { from { opacity:0; filter:blur(7px); transform:translateY(24px) scale(.985); }
+                      to   { opacity:1; filter:blur(0);  transform:none; } }
+@keyframes line-in  { from { opacity:0; transform:translateY(3px); } to { opacity:1; transform:none; } }
+.u-rise  { animation: rise-in  var(--dur-med) var(--ease-enter) both; }
+.u-media { animation: media-in 260ms            var(--ease-out)   both; }
+.u-line  { animation: line-in  160ms            var(--ease-out)   both; }
+/* Stagger siblings: style="--i:3" -> animation-delay: calc(var(--i) * 12ms) */
+.u-rise[style*="--i"], .u-line[style*="--i"] { animation-delay: calc(var(--i) * 12ms); }
+
+/* ---- SliceBot additions (app-specific tokens; the skill's structure is untouched) ---- */
+:root {
+  /* Chart categorical slots, validated for the dark surface. */
+  --viz-1:#7aa7ff; --viz-2:#ff9a62; --viz-grid:rgba(255,236,214,0.08); --viz-band:rgba(240,180,60,0.08);
+
+  /* 3D studio (Repair). Read by src/three/palette.ts so materials never hardcode color. */
+  --scene-bg:#100d0b; --scene-floor:#1b1714; --scene-ground:#101011; --scene-road:#2a2b2e; --scene-road-line:#3a3b3f;
+  --scene-block:#2b2d31; --scene-block-top:#34363b; --scene-depot:#2c4052;
+  --scene-robot:#e9e4dc; --scene-robot-trim:#4d4842; --scene-wheel:#2f2b28; --scene-motor:#9a948c;
+  --scene-battery:#4f7aa3; --scene-board:#3f8a5c; --scene-heater:#c4683a; --scene-seal:#efe6d2;
+  --scene-lock:#8d867d; --scene-camera:#2b2826; --scene-flag:#ff6b2c; --scene-glass:#6fb7d9;
+  --scene-key:#ffe2c4; --scene-rim:#7fb4ff;
+
+  --scene-water:#0f1b26; --scene-park:#122017; --scene-road-minor:#2f3136; --scene-road-major:#41444a;
+  --scene-freeway:#3a3033; --scene-building:#24262a; --scene-building-tall:#2f3237; --scene-landmark:#5a5f68;
+  --scene-hub:#ff6b2c; --scene-route:#9fc4e8; --scene-route-backup:#3fbf6f;
+  --scene-route-runner:#fdac53;
+}
+
+/* The city map. Three lights, picked from the in-app clock (or the Demo menu): night, dusk for the dinner rush, and day.
+ * Routes keep their meaning in every light: blue deliveries, cyan backups, gold runners and stalls. */
+:root {
+  --map-bg:#0a0f1a; --map-ground:#0f1726; --map-water:#0c2440; --map-park:#0f261d;
+  --map-road-minor:#22304a; --map-road-major:#38496a; --map-freeway:#4a3f5c;
+  --map-building:#18223a; --map-building-tall:#26365a; --map-landmark:#3d4f78; --map-depot:#5aaee6;
+  --map-robot:#f2ede6; --map-route:#4b8dff; --map-route-glow:#7aa7ff; --map-route-backup:#2fd4e6; --map-route-runner:#f0c75e;
+  --map-route-stalled:#f0b43c; --map-pin:#ff6b2c; --map-pin-customer:#ff6b2c;
+  --map-label:#9aa6bd; --map-label-strong:#f7f1e9;
+  --map-sky:#8fb4ff; --map-sun:#cfe0ff; --map-sun-i:0.9; --map-fill:#ff9a62; --map-hemi-i:0.75; --map-ambient-i:0.35;
+
+  /* Dusk: the dinner rush. Low orange sun, violet shadows, streets starting to glow. */
+  --map-dusk-bg:#2a1d3a; --map-dusk-ground:#2f2340; --map-dusk-water:#2c3f73; --map-dusk-park:#2c3d3a;
+  --map-dusk-road-minor:#4e3c5e; --map-dusk-road-major:#7a5470; --map-dusk-freeway:#86597a;
+  --map-dusk-building:#43325a; --map-dusk-building-tall:#58406e; --map-dusk-landmark:#8a6a8a;
+  --map-dusk-label:#e9d6e0; --map-dusk-sky:#ffb38a; --map-dusk-sun:#ffa060; --map-dusk-fill:#9a8cff;
+
+  /* Day: lunchtime over Capitol Hill. Warm paper streets, soft shadows. */
+  --map-day-bg:#e9e2d6; --map-day-ground:#e4dccf; --map-day-water:#a9cfe0; --map-day-park:#c9dcb8;
+  --map-day-road-minor:#f4efe7; --map-day-road-major:#fbf8f3; --map-day-freeway:#f2dfc8;
+  --map-day-building:#d6ccbd; --map-day-building-tall:#c9bdab; --map-day-landmark:#bfb3a2;
+  --map-day-label:#5b5045; --map-day-label-strong:#24190f; --map-day-sky:#fff4e0; --map-day-sun:#fff1d6;
+  --map-day-fill:#a8c8ff; --map-day-route:#2f6fe0; --map-day-route-backup:#0aa5b8; --map-day-route-runner:#c98a00;
+  --map-day-robot:#3d342c;
+}
+
+/* The pizza: the copilot's mark, the queue's progress, the brand's one full-color object. */
+:root { --pizza-crust:#d9954a; --pizza-crust-dark:#b8762f; --pizza-cheese:#f4c95d; --pizza-pepperoni:#c2412d; --pizza-basil:#4fb071; }
+
+/* The SliceBot robot illustration (sign-in hero, the courier on the order tracker). Same in both themes. */
+:root, [data-theme="light"] {
+  --bot-body-hi:#fbf8f3; --bot-body-mid:#ece6dc; --bot-body-lo:#b9b0a3; --bot-shine:#ffffff;
+  --bot-side-hi:#d8d0c4; --bot-side-lo:#8a8176;
+  --bot-lid-hi:#ffb07a; --bot-lid-mid:#ff6b2c; --bot-lid-lo:#c94812;
+  --bot-screen-hi:#2a241f; --bot-screen-lo:#0c0a08; --bot-screen-edge:#3b342d;
+  --bot-eye:#ff8f5e; --bot-eye-late:#f8cf6a; --bot-eye-core:#fff3e8;
+  --bot-light:#ffe6a8; --bot-tire-hi:#5a5149; --bot-tire-lo:#1a1612; --bot-tire-edge:#2b2520; --bot-hub:#b9b0a3; --bot-hub-shine:#f2ede6;
+  --bot-mast:#a59a8d; --bot-shadow:#000000;
+  --box-hi:#f6dc8f; --box-lo:#d9954a; --box-edge:#a8692a; --steam:#f7f1e9;
+}
